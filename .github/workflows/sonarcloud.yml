@@ -1,10 +1,9 @@
 name: SonarCloud Analysis
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    branches:
+      - main  # Run only for PRs to the main branch
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -13,14 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Ensures full history for accurate analysis
+      - name: Checkout code
+        uses: actions/checkout@v3  # Standardize versioning
 
       - name: Set up Python
-        uses: actions/setup-python@v4  # Use the latest setup-python version
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.12  # Update to Python 3.12 to match your environment
+          python-version: "3.12"  # Ensure this matches your project's environment
 
       - name: Install dependencies
         run: |
@@ -30,5 +28,5 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for the scan
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # SonarCloud authentication

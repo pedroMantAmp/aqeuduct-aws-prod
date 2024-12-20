@@ -1,4 +1,12 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Django
+*.sqlite3
+db.sqlite3
+
+# Environment
 .env
-.DS_Store
+*.env

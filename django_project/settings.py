@@ -98,25 +98,46 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'postgres'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'USER': os.getenv('POSTGRES_USER', 'aqueduct_admin'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'StrongPassword123!'),
         'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
-    }
+    },
+    'supabase': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('SUPABASE_DB_NAME', 'postgres'),
+        'USER': os.getenv('SUPABASE_DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD', 'VJqobASuud83mFWe'),
+        'HOST': os.getenv('SUPABASE_DB_HOST', 'localhost'),
+        'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
+    },
 }
+
+# Validate critical environment variables
+required_vars = ['POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_HOST']
+for var in required_vars:
+    if not os.getenv(var):
+        raise ValueError(f"Missing required environment variable: {var}")
 
 # ========================
 # Static and Media Files
 # ========================
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static_tables']
+
+# Include your `static_tables` directory for additional static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'static_tables',
+    ]
+
+# Specify `staticfiles` as the directory for collected static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Ensure required directories exist
-for directory in ['templates', 'static_tables', 'staticfiles', 'media']:
+for directory in ['static_tables', 'staticfiles', 'media', 'templates']:
     (BASE_DIR / directory).mkdir(exist_ok=True)
 
 # ========================
@@ -143,14 +164,14 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========================
-# AWS Configuration (Optional)
+# AWS Configuration
 # ========================
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
 
 # ========================
-# Supabase Configuration (Optional)
+# Supabase Configuration
 # ========================
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_API_KEY = os.getenv('SUPABASE_API_KEY')
@@ -167,9 +188,14 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'error.log',
+        },
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': ['console', 'file'],
         'level': 'DEBUG' if DEBUG else 'INFO',
     },
 }

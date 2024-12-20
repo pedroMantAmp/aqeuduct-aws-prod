@@ -16,12 +16,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Ensures full history for accurate analysis
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Use the latest setup-python version
         with:
-          python-version: 3.9
+          python-version: 3.12  # Update to Python 3.12 to match your environment
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:

@@ -1,0 +1,18 @@
+Name: Glue Data Processing Workflow
+RunMode: QUEUED
+Compute:
+  Type: EC2
+  Fleet: Linux.x86-64.Large
+  SharedInstance: true
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  - Name: Run AWS Glue ETL Job
+    Identifier: aws/glue/start-job-run@1.0
+    Inputs:
+      JobName: glue-etl-job

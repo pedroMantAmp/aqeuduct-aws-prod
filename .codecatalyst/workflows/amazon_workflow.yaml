@@ -1,0 +1,33 @@
+Name: Amazon Data Workflow
+RunMode: QUEUED
+Compute:
+  Type: EC2
+  Fleet: Linux.x86-64.Large
+  SharedInstance: true
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  - Name: Trigger Amazon Step Function
+    Identifier: aws/stepfunctions/start-execution@1.0
+    Inputs:
+      StateMachineArn: arn:aws:states:us-east-1:123456789012:stateMachine:AmazonDataPipeline
+      Input: |
+        {
+          "steps": [
+            {
+              "task": "data-ingestion",
+              "source": "shopify-api",
+              "destination": "s3://aqueduct-ingestion-bucket/incoming-data/"
+            },
+            {
+              "task": "data-etl",
+              "source": "s3://aqueduct-ingestion-bucket/incoming-data/",
+              "destination": "amazon_rds_table"
+            }
+          ]
+        }

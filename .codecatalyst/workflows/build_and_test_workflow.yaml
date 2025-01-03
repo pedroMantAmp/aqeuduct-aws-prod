@@ -6,15 +6,17 @@ Compute:
   SharedInstance: true
 SchemaVersion: "1.0"
 
-# Optional - Set automatic triggers.
 Triggers:
   - Type: Push
     Branches:
       - main
+      - dev
+  - Type: PullRequest
+    Branches:
+      - main
 
-# Required - Define action configurations.
 Actions:
-  - Name: Install Dependencies and Run Tests
+  - Name: Install Dependencies, Validate, and Run Tests
     Identifier: aws/codebuild/standard:5.0
     Inputs:
       BuildspecOverride: |
@@ -26,7 +28,16 @@ Actions:
             commands:
               - echo "Installing dependencies"
               - pip install -r requirements.txt
+          pre_build:
+            commands:
+              - echo "Running pre-build validations"
+              - flake8 .
+              - black --check .
           build:
             commands:
               - echo "Running tests"
-              - pytest
+              - pytest --max-workers=4
+          post_build:
+            commands:
+              - echo "Uploading test reports"
+              - aws s3 cp test-reports/ s3://your-s3-bucket/test-reports/ --recursive

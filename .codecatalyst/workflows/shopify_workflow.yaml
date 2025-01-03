@@ -1,0 +1,21 @@
+Name: Shopify Integration Workflow
+RunMode: QUEUED
+Compute:
+  Type: EC2
+  Fleet: Linux.x86-64.Large
+  SharedInstance: true
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  - Name: Fetch Shopify Data
+    Identifier: custom/actions/python
+    Inputs:
+      Script: |
+        import shopify
+        # Your Shopify API code here
+        print("Fetching Shopify data...")

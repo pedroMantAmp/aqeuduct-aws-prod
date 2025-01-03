@@ -1,0 +1,32 @@
+Name: Data Ingestion Workflow
+RunMode: QUEUED
+Compute:
+  Type: EC2
+  Fleet: Linux.x86-64.Large
+  SharedInstance: true
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  - Name: Trigger Lambda for Data Ingestion
+    Identifier: aws/lambda/invoke@1.0
+    Inputs:
+      FunctionName: data-ingestion-lambda
+      Payload: |
+        {
+          "source": "shopify-api",
+          "destination": "s3://aqueduct-ingestion-bucket/incoming-data/"
+        }
+  - Name: Notify of Ingestion Success
+    Identifier: aws/sns/publish@1.0
+    Inputs:
+      TopicArn: arn:aws:sns:us-east-1:123456789012:IngestionNotifications
+      Message: |
+        {
+          "status": "success",
+          "message": "Data ingestion completed for Shopify API."
+        }

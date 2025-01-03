@@ -1,0 +1,31 @@
+Name: ETL Workflow
+RunMode: QUEUED
+Compute:
+  Type: EC2
+  Fleet: Linux.x86-64.Large
+  SharedInstance: true
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  - Name: Trigger Glue Job
+    Identifier: aws/glue/start-job-run@1.0
+    Inputs:
+      JobName: amazon-data-etl
+      Arguments:
+        "--source_s3_path": "s3://aqueduct-ingestion-bucket/incoming-data/"
+        "--destination_rds_table": "amazon_data"
+
+  - Name: Notify of ETL Success
+    Identifier: aws/sns/publish@1.0
+    Inputs:
+      TopicArn: arn:aws:sns:us-east-1:123456789012:ETLNotifications
+      Message: |
+        {
+          "status": "success",
+          "message": "ETL job completed for Amazon data."
+        }

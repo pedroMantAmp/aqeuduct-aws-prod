@@ -1,0 +1,27 @@
+version: 1
+default_environment: dev
+project_id: 26052e2d-269d-43db-8a8f-f41a252a0865
+
+environments:
+  - name: dev
+  - name: staging
+  - name: prod
+
+plugins:
+  extractors:
+    - name: tap-csv
+      variant: meltanolabs
+      pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+      config:
+        files:
+          - entity: simple_data
+            path: /Users/MacBookAir/workspace/aqueduct-prod-aws/data/simple_data.csv
+            keys:
+              - id
+            delimiter: ','
+            encoding: utf-8
+loaders:
+  - name: target-jsonl
+    config:
+      output_path: /Users/MacBookAir/workspace/aqueduct-prod-aws/meltano-aqueduct-prod/output.jsonl
+      do_timestamp_file: false

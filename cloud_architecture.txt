@@ -1,0 +1,28 @@
+cloud_architecture/
+├── data_sources/
+│   ├── Shopify API                 # Shopify transaction API
+│   ├── Walmart API                 # Walmart order data API
+│   ├── Meltano Extractors          # Connectors for external platforms
+├── ingestion/
+│   ├── Meltano Pipelines           # Extract and load data into AWS
+│   ├── AWS Lambda                  # Trigger ingestion workflows
+│   ├── Supabase Staging Tables     # Temporary storage for raw data
+├── processing/
+│   ├── AWS Glue                    # Data cleansing and transformation
+│   ├── AWS RDS                     # Storing cleaned and transformed data
+│   ├── Prefect Processing Flows    # Orchestrates data processing tasks
+├── orchestration/
+│   ├── Prefect Cloud               # Manages workflows across platforms
+│   ├── AWS Step Functions          # Optional orchestration for AWS-native tasks
+├── validation/
+│   ├── AWS Glue ETL Jobs           # Validates data schemas and transformations
+│   ├── Supabase Validation Scripts # Validation logic for staging data
+├── storage/
+│   ├── Amazon S3                   # Intermediate and raw data storage
+│   ├── Supabase Data Warehouse     # Final destination for processed data
+├── analytics/
+│   ├── AWS QuickSight              # Dashboards for analytics and reporting
+│   ├── Supabase Dashboard Tables   # Powers client-facing dashboards
+├── error_handling/
+│   ├── AWS CloudWatch Logs         # Logs ingestion and processing errors
+│   ├── Prefect Notifications       # Alerts on failed workflows

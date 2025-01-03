@@ -1,4 +1,4 @@
-Name: Workflow_3520
+Name: Build and Test Workflow
 RunMode: QUEUED
 Compute:
   Type: EC2
@@ -14,7 +14,7 @@ Triggers:
 
 # Required - Define action configurations.
 Actions:
-  - Name: Example Action
+  - Name: Install Dependencies and Run Tests
     Identifier: aws/codebuild/standard:5.0
     Inputs:
       BuildspecOverride: |
